@@ -11,10 +11,11 @@ vector<string> keypad = {
     "ghi",
     "jkl",
     "mno",
-    "pqrs"
+    "pqrs",
     "tuv",
     "wxyz"
 };
+
 
 void generateCombinations(const string &digits, int index, string current, vector<string> &results) {
     if (index == digits.size()) { 
@@ -44,7 +45,7 @@ int main() {
         return 0;
     }
 
-    vector<string> results; 
+    vector<string> results = {}; 
     generateCombinations(input, 0, "", results);
 
     cout << "Output:" << endl;

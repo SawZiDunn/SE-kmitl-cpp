@@ -21,14 +21,14 @@ class HeartRateMonitor {
         }
 
         void calculate_age() {
-            int current_yr = 2023;
-            int current_month = 12;
-            int current_day = 28;
+            int current_yr{2023};
+            int current_month{12};
+            int current_day{18};
 
             user_age = current_yr - birth_yr;
 
             if ((birth_month > current_month) || (birth_month == current_month && birthday > current_day)) {
-                user_age--;
+                --user_age;
             }
         }
 
