@@ -39,6 +39,7 @@ int main()
 int findSmallestNum(const vector<int> &vec)
 {
     int temp{vec.at(0)};
+
     for (int i : vec)
     {
         if (temp > i)
