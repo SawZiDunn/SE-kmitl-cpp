@@ -1,3 +1,8 @@
+/*
+Write a C++ program that uses a recursive func on to reverse a user-entered string. The program should
+prompt the user to input a string, and then it should display the string in reverse order.
+ */
+
 #include <iostream>
 #include <string>
 
