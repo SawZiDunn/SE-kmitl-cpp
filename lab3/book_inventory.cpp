@@ -25,6 +25,7 @@ public:
     {
         if (title != "")
         {
+            // title = title won't work for same parameter name and class attribute name
             this->title = title;
         }
         else
@@ -137,7 +138,7 @@ public:
         }
 
         cout << "All books: " << endl;
-        for (Book i : books)
+        for (const Book &i : books)
         {
             cout << count << " - Title: " << i.get_title()
                  << ", Author: " << i.get_author()
