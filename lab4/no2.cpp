@@ -13,7 +13,7 @@ public:
     void calculate_population_growth(int year_span = 75)
     {
         cout << "Year\t\t" << "Projected Population\t" << "Annual Increase" << endl;
-        bool is_doubled = false;
+        bool is_doubled{false};
 
         double projected_population = current_population;
 
