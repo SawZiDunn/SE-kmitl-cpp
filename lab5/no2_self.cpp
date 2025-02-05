@@ -12,8 +12,8 @@ int main()
     srand(static_cast<unsigned int>(time(0)));
 
     int level;
-    int correct_ans = 0;
-    int incorrect_ans = 0;
+    int correct_ans{0};
+    int incorrect_ans{0};
     int num1;
     int num2;
     char optr;
