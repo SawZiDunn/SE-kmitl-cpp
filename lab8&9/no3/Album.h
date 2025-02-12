@@ -2,14 +2,15 @@
 #include <string>
 using namespace std;
 
-class Album {
+class Album
+{
 public:
-    explicit Album(const std::string& title, const std::string& artist, double price, int copies);
+    Album(const std::string &title, const std::string &artist, double price, int copies);
     void purchaseAlbum();
 
     // static int getTotalAlbums() {return totalAlbums;};
     static int getTotalAlbums();
-    static double getTotalSales() {return totalSales;};
+    static double getTotalSales() { return totalSales; };
 
     // Getter methods to access album details
     string getTitle() const { return title; }
@@ -26,5 +27,3 @@ private:
     static int totalAlbums;
     static double totalSales;
 };
-
-// g++ Album.cpp main.cpp -o output

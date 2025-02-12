@@ -1,5 +1,6 @@
 #include <iostream>
-#include <cstring> // strlen() -> no of chars until the first null terminator
+#include <cstring> // strlen() -> no of chars until the first null terminator, doesn't count \n
+#include <limits>
 using namespace std;
 
 void concatenateString(char *, const char *, int);
@@ -7,12 +8,19 @@ bool isSubstring(const char *, const char *);
 
 int main()
 {
-    char string1[80];
-    char string2[5];
+    char string1[80]; // Read max 79 chars + '\0'
+    char string2[80];
 
     cout << "Enter two strings: ";
-    cin >> string1 >> string2;
-    cout << string2 << endl;
+    cin >> string1; // doesn't prevent buffer overflow
+
+    // Clear buffer before the next input
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+    cin >> string2;
+
+    cout << "s1 " << string1 << endl;
+    cout << "s2 " << string2 << endl;
 
     concatenateString(string1, string2, 80);
     cout << "Concatenated string: " << string1 << endl;

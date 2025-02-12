@@ -3,6 +3,9 @@
         "*.ejs": "html",
         "*html": "html",
         "*.rs": "rust",
-        "ostream": "cpp"
+        "ostream": "cpp",
+        "iostream": "cpp",
+        "istream": "cpp",
+        "iosfwd": "cpp"
     }
 }

@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cstring>
+#include <string>
 using namespace std;
 
 void getStringDetails(const char *, int &, int &);
@@ -7,9 +8,10 @@ void reverseString(char *);
 
 int main()
 {
-    char string1[80];
+    char string1[5];
     cout << "Enter a string: ";
-    cin >> string1;
+
+    cin.getline(string1, 5); // reads input up to \n and stops
 
     int vowelCount = 0;
     int length = 0;
@@ -39,11 +41,12 @@ void getStringDetails(const char *s, int &vowelCount, int &length)
 
 void reverseString(char *s)
 {
+
     int length = strlen(s);
     char *start = s;
     char *end = s + length - 1;
 
-    while (start < end)
+    while (start < end) // compare memory address
     {
         swap(*start, *end);
         start++;
