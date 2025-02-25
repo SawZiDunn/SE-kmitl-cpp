@@ -4,6 +4,7 @@
 #include <fstream>
 #include <sstream>
 #include <limits>
+#include <algorithm>
 
 using namespace std;
 
@@ -51,7 +52,7 @@ bool isValidDate(const string &date)
 
     for (int i = 0; i < 10; i++)
     {
-        if (i != 4 && i != 7 && !isdigit(date[i]))
+        if (i != 4 && i != 7 && !isdigit(date[i])) // skip - and checks other numbers
             return false;
     }
     return true;
@@ -245,72 +246,96 @@ void cancelReservation(vector<Movie> &movies, vector<Reservation> &reservations)
     }
 }
 
+// Function to save data in CSV format
 void saveToFile(const vector<Movie> &movies, const vector<Reservation> &reservations)
 {
-    // Save movies
-    ofstream movieFile("movies.txt");
+    // Save movies in CSV format
+    ofstream movieFile("movies.csv");
+    movieFile << "Movie Title,Date,Round,Seat Number,Availability\n"; // CSV Header
+
     for (const Movie &movie : movies)
     {
-        movieFile << movie.title << "," << movie.date << ",";
-        for (const auto &round : movie.availableSeats)
+        for (int round = 0; round < movie.availableSeats.size(); round++)
         {
-            for (bool seat : round)
+            for (int seat = 0; seat < movie.availableSeats[round].size(); seat++)
             {
-                movieFile << seat << ",";
+                movieFile << movie.title << ","
+                          << movie.date << ","
+                          << round + 1 << "," // Round number (1-based index)
+                          << seat + 1 << ","  // Seat number (1-based index)
+                          << (movie.availableSeats[round][seat] ? "true" : "false") << "\n";
             }
         }
-        movieFile << endl;
     }
     movieFile.close();
 
-    // Save reservations
-    ofstream resFile("reservations.txt");
+    // Save reservations in CSV format
+    ofstream resFile("reservations.csv");
+    resFile << "Customer Name,Movie Title,Date,Round,Seat Number\n"; // CSV Header
+
     for (const Reservation &res : reservations)
     {
         resFile << res.customerName << ","
                 << res.movieTitle << ","
                 << res.date << ","
                 << res.round << ","
-                << res.seatNumber << endl;
+                << res.seatNumber << "\n";
     }
     resFile.close();
 }
 
 void loadFromFile(vector<Movie> &movies, vector<Reservation> &reservations)
 {
-    // Load movies
-    ifstream movieFile("movies.txt");
+    // Load movies from CSV
+    ifstream movieFile("movies.csv");
     if (movieFile.is_open())
     {
         string line;
+        getline(movieFile, line); // Skip header
+
         while (getline(movieFile, line))
         {
             stringstream ss(line);
-            string title, date, seatStr;
+            string title, date, roundStr, seatStr, availabilityStr;
 
             getline(ss, title, ',');
             getline(ss, date, ',');
+            getline(ss, roundStr, ',');
+            getline(ss, seatStr, ',');
+            getline(ss, availabilityStr, ',');
 
-            vector<vector<bool>> seats(4, vector<bool>(40));
-            for (int i = 0; i < 4; i++)
+            int round = stoi(roundStr) - 1;
+            int seat = stoi(seatStr) - 1;
+            bool availability = (availabilityStr == "true");
+
+            // Find or create movie entry
+            auto it = find_if(movies.begin(), movies.end(),
+                              [&title, &date](const Movie &m)
+                              { return m.title == title && m.date == date; });
+
+            if (it == movies.end())
             {
-                for (int j = 0; j < 40; j++)
-                {
-                    getline(ss, seatStr, ',');
-                    seats[i][j] = (seatStr == "1");
-                }
+                // Create new movie entry
+                vector<vector<bool>> seats(4, vector<bool>(40, true)); // Default all seats available
+                seats[round][seat] = availability;
+                movies.push_back({title, date, seats});
             }
-
-            movies.push_back({title, date, seats});
+            else
+            {
+                // Update existing movie seat availability
+                it->availableSeats[round][seat] = availability;
+            }
         }
         movieFile.close();
     }
 
-    // Load reservations
-    ifstream resFile("reservations.txt");
+    // Load reservations from CSV
+    ifstream resFile("reservations.csv");
     if (resFile.is_open())
     {
         string line;
+        getline(resFile, line); // Skip header
+
         while (getline(resFile, line))
         {
             stringstream ss(line);
@@ -322,9 +347,7 @@ void loadFromFile(vector<Movie> &movies, vector<Reservation> &reservations)
             getline(ss, roundStr, ',');
             getline(ss, seatStr, ',');
 
-            reservations.push_back({name, title, date,
-                                    stoi(roundStr),
-                                    stoi(seatStr)});
+            reservations.push_back({name, title, date, stoi(roundStr), stoi(seatStr)});
         }
         resFile.close();
     }
