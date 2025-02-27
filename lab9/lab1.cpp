@@ -7,7 +7,7 @@ using namespace std;
 class Fraction
 {
 public:
-    Fraction() : numerator(0), denominator(0)
+    Fraction() : numerator(0), denominator(1)
     {
     }
 
@@ -57,11 +57,11 @@ public:
     {
         Fraction f;
 
-        if (f1.denominator == 0 || f2.denominator == 0)
+        if (f1.denominator == 0 || f2.numerator == 0)
         {
             cout << "undefined!" << endl;
             f.numerator = 0;
-            f.denominator = 0;
+            f.denominator = 1;
         }
 
         f.numerator = f1.numerator * f2.denominator;
@@ -79,13 +79,7 @@ public:
         int temp_n1 = f1.numerator * (temp_d / f1.denominator);
         int temp_n2 = f2.numerator * (temp_d / f2.denominator);
 
-        if (temp_n1 > temp_n2)
-        {
-            cout << "f1 is greater than f2" << endl;
-            return true;
-        }
-
-        return false;
+        return temp_n1 > temp_n2;
     }
 
     friend bool operator<(Fraction const &f1, Fraction const &f2)
@@ -94,13 +88,7 @@ public:
         int temp_n1 = f1.numerator * (temp_d / f1.denominator);
         int temp_n2 = f2.numerator * (temp_d / f2.denominator);
 
-        if (temp_n1 < temp_n2)
-        {
-            cout << "f1 is less than f2" << endl;
-            return true;
-        }
-
-        return false;
+        return temp_n1 < temp_n2;
     }
 
     friend bool operator==(Fraction const &f1, Fraction const &f2)
@@ -109,26 +97,22 @@ public:
         int temp_n1 = f1.numerator * (temp_d / f1.denominator);
         int temp_n2 = f2.numerator * (temp_d / f2.denominator);
 
-        if (temp_n1 == temp_n2)
-        {
-            cout << "f1 is equal to f2" << endl;
-            return true;
-        }
-
-        return false;
+        return temp_n1 == temp_n2;
     }
 
-    friend istream &operator>>(istream &cin, Fraction &c)
+    // overload cin
+    friend istream &operator>>(istream &cin, Fraction &f)
     {
         char slash;
-        cin >> c.numerator >> slash >> c.denominator;
+        cin >> f.numerator >> slash >> f.denominator;
         return cin;
     }
 
-    friend ostream &operator<<(ostream &, Fraction &c)
+    // overload cout
+    friend ostream &operator<<(ostream &os, Fraction &f)
     {
-        cout << c.numerator << "/" << c.denominator;
-        return cout;
+        os << f.numerator << "/" << f.denominator;
+        return os;
     }
 
 private:
@@ -137,6 +121,11 @@ private:
 
     void simplify()
     {
+        if (this->numerator == 0)
+        {
+            this->denominator = 1;
+            return;
+        }
 
         int temp_gcd = gcd(numerator, denominator);
         numerator /= temp_gcd;
@@ -158,9 +147,6 @@ int main()
     cin >> f2;
     cout << f2 << endl;
 
-    // Fraction f1{2, 5};
-    // Fraction f2{2, 5};
-
     Fraction f = f1 + f2;
     cout << "Sum: " << f << endl;
 
@@ -173,7 +159,18 @@ int main()
     f = f1 / f2;
     cout << "Quotient: " << f << endl;
 
-    f1 < f2;
+    if (f1 < f2)
+    {
+        cout << "f1 is less than f2." << endl;
+    }
+    else if (f1 > f2)
+    {
+        cout << "f1 is greater than f2." << endl;
+    }
+    else
+    {
+        cout << "f1 is equal to f2." << endl;
+    }
 
     return 0;
 }
