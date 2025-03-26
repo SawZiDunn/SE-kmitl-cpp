@@ -52,7 +52,7 @@ public:
 
     void displayInfo() const
     {
-        cout << "Name: " << name
+        cout << "\nName: " << name
              << " - Propulsion: " << propulsion
              << " - HullStrength: " << hullStrength
              << " - Speed: " << speed << endl;
@@ -305,6 +305,7 @@ void displayInventory(const Player &player)
     }
 }
 
+// to clear remaining inputs from cin
 void clear_input_buffer()
 {
     cin.clear();
@@ -336,115 +337,135 @@ int main()
         cout << "Choice: ";
         cin >> option;
 
-        // clear_input_buffer();
+        clear_input_buffer();
 
         if (option == 1)
         {
             AlienShip *ship = galaxy.explore();
 
-            if (!ship)
+            if (ship)
             {
-                cout << "\nNo encounter!";
-                continue;
-            }
+                bool capturing = true;
 
-            int shipIndex = 0;
-            for (int i = 0; i < galaxy.getAlienShips().size(); ++i)
-            {
-                if (galaxy.getAlienShips()[i].getName() == ship->getName())
+                int shipIndex = 0;
+                for (int i = 0; i < galaxy.getAlienShips().size(); ++i)
                 {
-                    shipIndex = i;
-                    break;
-                }
-            }
-
-            ship->displayInfo();
-
-            int x;
-            cout << "\n1.Scan";
-
-            if (!player.getTractorBeam())
-            {
-                cout << "\n2.EquipTractorBeam" << endl;
-            }
-
-            cin >> x;
-            // clear_input_buffer();
-
-            if (x == 1)
-            {
-                displayInventory(player);
-                int scanner_no;
-                int max_scanner_no = player.getScanners().size();
-                cout << "Scanner No: (1-" << to_string(max_scanner_no) << "): ";
-
-                cin >> scanner_no;
-                // clear_input_buffer();
-
-                if (scanner_no < 0 || scanner_no > max_scanner_no)
-                {
-                    cout << "Invalid Scanner" << endl;
-                    continue;
-                }
-
-                --scanner_no; // to match with index
-
-                if (player.captureShip(*ship, scanner_no))
-                {
-                    cout << "A new ship is captured!" << endl;
-                    cout << ship->getName() << " - Hull Strength: " << ship->getHullStrength() << endl;
-                    galaxy.removeShip(shipIndex);
-                    displayInventory(player);
-                }
-                else
-                {
-                    if (ship->attemptFlee())
+                    if (galaxy.getAlienShips()[i].getName() == ship->getName())
                     {
-                        cout << "\nShip fleed!" << endl;
+                        shipIndex = i;
+                        break;
+                    }
+                }
 
-                        galaxy.removeShip(shipIndex);
+                do
+                {
+                    ship->displayInfo();
+
+                    int x;
+                    cout << "\n1.Scan";
+
+                    if (!player.getTractorBeam())
+                    {
+                        cout << "\n2.EquipTractorBeam" << endl;
+                    }
+
+                    cin >> x;
+                    clear_input_buffer();
+
+                    if (x == 1)
+                    {
+                        displayInventory(player);
+                        int scanner_no;
+                        int max_scanner_no = player.getScanners().size();
+
+                        cout << "Scanner No: (1-" << to_string(max_scanner_no) << "): ";
+
+                        cin >> scanner_no;
+                        clear_input_buffer();
+
+                        if (scanner_no > 0 && scanner_no <= max_scanner_no)
+                        {
+                            --scanner_no; // to match with index
+
+                            if (player.captureShip(*ship, scanner_no))
+                            {
+                                cout << "A new ship is captured!" << endl;
+                                cout << ship->getName() << " - Hull Strength: " << ship->getHullStrength() << endl;
+                                galaxy.removeShip(shipIndex);
+                                displayInventory(player);
+                                capturing = false;
+                            }
+                            else
+                            {
+                                if (ship->attemptFlee())
+                                {
+                                    cout << "\nShip fleed!" << endl;
+                                    galaxy.removeShip(shipIndex);
+                                }
+                                else
+                                {
+                                    cout << "\nShip remained in range!" << endl;
+                                }
+
+                                capturing = false;
+                            }
+                        }
+                        else
+                        {
+                            cout << "Invalid Scanner" << endl;
+                            continue;
+                        }
+                    }
+                    else if (x == 2)
+                    {
+                        int option;
+                        cout << "\n1.Standard\n2.Heavy" << endl;
+                        cin >> option;
+                        clear_input_buffer();
+
+                        if (option == 1)
+                        {
+                            TractorBeam tractorBeam{"Standard", 40};
+                            player.equipTractorBeam(&tractorBeam);
+                        }
+                        else if (option == 2)
+                        {
+                            TractorBeam tractorBeam{"Heavy", 40};
+                            player.equipTractorBeam(&tractorBeam);
+                        }
+                        else
+                        {
+                            cout << "Invalid Choice!" << endl;
+                            continue;
+                        }
+
+                        cout << "Tractor Beam Equipped!";
                     }
                     else
                     {
-                        cout << "\nShip remained in range!" << endl;
+                        cout << "Invalid Input!" << endl;
+                        continue;
                     }
+
+                } while (capturing);
+
+                if (galaxy.getAlienShips().empty())
+                {
+                    cout << "\nNo more ships in the galaxy! You win!" << endl;
+                    displayInventory(player);
+                    break;
+                }
+                else if (player.getScanners().empty())
+                {
+                    cout << "\nNo more scanners! You lose!" << endl;
+                    displayInventory(player);
+                    break;
                 }
             }
             else
             {
-                int option;
-                cout << "\n1.Standard\n2.Heavy" << endl;
-                cin >> option;
-
-                if (option == 1)
-                {
-                    TractorBeam tractorBeam{"Standard", 40};
-                    player.equipTractorBeam(&tractorBeam);
-                }
-                else if (option == 2)
-                {
-                    TractorBeam tractorBeam{"Heavy", 40};
-                    player.equipTractorBeam(&tractorBeam);
-                }
-                else
-                {
-                    cout << "Invalid Choice!" << endl;
-                    continue;
-                }
-                cout << "Tractor Beam Equipped!";
-            }
-
-            if (galaxy.getAlienShips().empty())
-            {
-                cout << "\nNo more ships in the galaxy! You win!" << endl;
-                displayInventory(player);
-                break;
-            }
-            else if (player.getScanners().empty())
-            {
-                cout << "\nNo more scanners! You lose!" << endl;
-                displayInventory(player);
-                break;
+                cout << "\nNo encounter!";
+                continue;
             }
         }
         else if (option == 2)

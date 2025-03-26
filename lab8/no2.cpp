@@ -28,6 +28,7 @@ void getStringDetails(const char *s, int &vowelCount, int &length)
 {
     length = 0;
     vowelCount = 0;
+
     while (*s != '\0')
     {
         length++;

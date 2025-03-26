@@ -1,37 +1,41 @@
 #include "Album.h"
-#include <iostream>
 
-int Album::totalAlbums = 0;
-double Album::totalSales = 0;
+// initialize static attributes
+// no need to include static keyword
+int Album::totalAlbums = 0; // need to declare int again?
+double Album::totalSales = 0.0;
 
-Album::Album(const std::string &title, const std::string &artist, double price, int copies)
-    : title(title), artist(artist), price(price), copiesAvailable(copies)
+int Album::getTotalAlbums()
 {
+    return totalAlbums; // Album::totalAlbums;
+}
 
+double Album::getTotalSales()
+{
+    return totalSales;
+}
+
+Album::Album(const string &title, const string &artist, double price, int copies)
+    : title(title), artist(artist), price(price), copies(copies)
+{
     totalAlbums += copies;
 }
 
-void Album::purchaseAlbum()
+bool Album::purchaseAlbum()
 {
-    if (copiesAvailable > 0)
+    if (copies > 0)
     {
-        copiesAvailable--;
+        totalAlbums--;
+        copies--;
         totalSales += price;
-        totalAlbums--; // Reduce total albums count
-        std::cout << "Album purchased successfully!\n";
+        return true;
     }
-    else
-    {
-        std::cout << "Sorry, this album is out of stock!\n";
-    }
+    return false;
 }
 
-/*
-If we want to implement static functions in cpp file, no need to include static keywork
-*/
-int Album::getTotalAlbums()
+void Album::displayInfo()
 {
-    return Album::totalAlbums; // Album::totalAlbums
+    cout << "Title: " << title << " - Artist: " << artist << " - Price: " << price << " THB - Copies: " << copies << endl;
 }
 
-// g++ Album.cpp main.cpp -o output
+// run -> g++ Album.cpp main.cpp -o output

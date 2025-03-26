@@ -29,7 +29,7 @@ int main()
     Eagle *eagle = new Eagle();
     eagle->fly();
 
-    cout << "hello" << endl;
+    cout << "after calling fly()" << endl;
 
     delete eagle;
 

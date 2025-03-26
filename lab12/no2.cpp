@@ -9,6 +9,7 @@ class CarbonEmitter
 {
 public:
     CarbonEmitter(string uniqueId) : id(uniqueId) {}
+
     virtual double getCarbonFootprint() = 0;
     virtual void displayDetails() = 0;
     string getId() const { return id; }
@@ -149,15 +150,13 @@ protected:
 
 int main()
 {
-    // Create a vector to store CarbonEmitter pointers
+    // vector to store CarbonEmitter pointers
     vector<CarbonEmitter *> carbonEmitters;
 
-    // Validate inputs and get user input for each type of object
     Factory *factory = new Factory("FAC001", 10, 5.5, 0.3);
     carbonEmitters.push_back(factory);
 
-    Car *car = new Car("CAR001", 100, 25);
-    carbonEmitters.push_back(car);
+    carbonEmitters.push_back(new Car("CAR001", 100, 25));
 
     ElectricCar *electricCar = new ElectricCar("ECAR001", 80, 4, 50, 0.9);
     carbonEmitters.push_back(electricCar);
@@ -181,6 +180,7 @@ int main()
 
     cout << "Total Carbon Footprint: " << fixed << setprecision(2) << totalCarbonFootprint << " kg CO2" << endl;
 
+    // prevent memory leak
     for (CarbonEmitter *emitter : carbonEmitters)
     {
         delete emitter;

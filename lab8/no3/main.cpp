@@ -1,86 +1,113 @@
 #include <iostream>
 #include <vector>
 #include "Album.h"
+#include <string>
 #include <limits>
 
 using namespace std;
 
-void displayMenu()
-{
-    cout << "\nMENU:\n";
-    cout << "1. List Albums\n";
-    cout << "2. Purchase Album\n";
-    cout << "3. View Total Albums\n";
-    cout << "4. View Total Sales\n";
-    cout << "5. Exit\n";
-    cout << "Enter your choice: ";
-}
+void displayChoices();
+void clearBuffer();
+void listAlbums(vector<Album> &albums);
+void purchaseAlbum(vector<Album> &albums, int id);
 
 int main()
 {
     vector<Album> albums;
 
-    // albums.push_back({"Abbey Road", "The Beatles", 19.99, 5});
-    albums.emplace_back("The Dark Side of the Moon", "Pink Floyd", 21.99, 3);
-    albums.emplace_back("Thriller", "Michael Jackson", 25.50, 4);
-    albums.emplace_back("Hotel California", "Eagles", 15.99, 4);
-    albums.emplace_back("Back in Black", "AC/DC", 18.75, 2);
-    albums.emplace_back("Rumors", "Fleetwood Mac", 16.99, 3);
-    albums.emplace_back("The Wall", "Pink Floyd", 22.99, 2);
+    Album album{"Abbey Road", "The Beatles", 19.99, 0};
+    albums.push_back(album);
+
+    albums.push_back(Album{"Hotel California", "Eagles", 15.99, 4});
+
+    albums.push_back({"Abbey Road", "The Beatles", 19.99, 5});
+
+    albums.emplace_back("Abbey Road", "The Beatles", 19.99, 5);
 
     int choice;
     while (true)
     {
-        displayMenu();
+        displayChoices();
         cin >> choice;
-
-        if (cin.fail()) // checks for non-numeric inputs
+        if (cin.fail())
         {
-            cin.clear();
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cout << "clear buffer" << endl;
+            clearBuffer();
             cout << "Invalid choice. Please enter a number between 1 and 5.\n";
             continue;
         }
 
-        switch (choice)
+        if (choice == 1)
         {
-        case 1:
-        { // List albums
-            cout << "\nAvailable Albums:\n";
-            for (size_t i = 0; i < albums.size(); i++)
-            {
-                cout << i + 1 << ". " << albums[i].getTitle() << " by " << albums[i].getArtist()
-                     << " - $" << albums[i].getPrice() << " (" << albums[i].getCopiesAvailable() << " in stock)\n";
-            }
-            break;
+            listAlbums(albums);
         }
-        case 2:
-        { // Purchase an album
-            int index;
-            cout << "Enter the album number to purchase: ";
-            cin >> index;
+        else if (choice == 2)
+        {
+            int id;
+            cout << "Album ID: ";
+            cin >> id;
+            clearBuffer();
+            purchaseAlbum(albums, id);
+        }
+        else if (choice == 3)
+        {
+            cout << "Total Albums: " << Album::getTotalAlbums() << endl;
+        }
+        else if (choice == 4)
+        {
 
-            if (index > 0 && index <= albums.size())
-            {
-                albums[index - 1].purchaseAlbum();
-            }
-            else
-            {
-                cout << "Invalid choice. Try again.\n";
-            }
+            cout << "Total Sales: " << Album::getTotalSales() << endl;
+        }
+        else if (choice == 5)
+        {
             break;
         }
-        case 3: // View total albums
-            cout << "Total albums in stock: " << Album::getTotalAlbums() << endl;
-            break;
-        case 4: // View total sales
-            cout << "Total sales: $" << Album::getTotalSales() << endl;
-            break;
-        case 5: // Exit program
-            cout << "Exiting program. Goodbye!\n";
-            return 0;
-        default:
-            cout << "Invalid choice. Please enter a number between 1 and 5.\n";
+        else
+        {
+            cout << "Invalid Choice!" << endl;
+            continue;
         }
     }
+}
+
+void clearBuffer()
+{
+    cin.clear();
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+}
+
+void displayChoices()
+{
+    cout << "\n1. List Available Albums" << "\n"
+         << "2. Purchase Album" << "\n"
+         << "3. View Total Albums" << "\n"
+         << "4. View Total Revenue" << "\n"
+         << "5. Exit" << "\n"
+         << "Enter your choice: ";
+}
+
+void listAlbums(vector<Album> &albums)
+{
+    for (Album &album : albums)
+    {
+        album.displayInfo();
+    }
+}
+
+void purchaseAlbum(vector<Album> &albums, int id)
+{
+
+    for (int i = 1; i <= albums.size(); ++i)
+    {
+        if (i == id)
+        {
+            if (!albums[i - 1].purchaseAlbum())
+            {
+                cout << "No copies left!" << endl;
+                break;
+            }
+        }
+    }
+
+    cout << "Album not Found!" << endl;
 }

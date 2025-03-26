@@ -1,1 +1,1 @@
-### Assignments and Lab Codes from Object Oriented Programming (C++) during 1st year 2nd semester at KMITL
+### Assignments and Lab Codes from Object Oriented Programming (C++) Class during 1st Year 2nd Semester at KMITL

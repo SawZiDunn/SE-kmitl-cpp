@@ -19,7 +19,6 @@ public:
     }
 };
 
-// Derived class Piano
 class Piano : public Instrument
 {
 public:

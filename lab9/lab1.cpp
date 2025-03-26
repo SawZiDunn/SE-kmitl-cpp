@@ -11,11 +11,11 @@ public:
     {
     }
 
-    friend Fraction operator+(Fraction const &f1, Fraction const &f2)
+    Fraction operator+(Fraction const &f2)
     {
         Fraction f;
-        int temp_d = f1.denominator * f2.denominator;
-        int temp_n1 = f1.numerator * (temp_d / f1.denominator);
+        int temp_d = denominator * f2.denominator;
+        int temp_n1 = numerator * (temp_d / denominator);
         int temp_n2 = f2.numerator * (temp_d / f2.denominator);
 
         f.numerator = temp_n1 + temp_n2;
@@ -26,11 +26,11 @@ public:
         return f;
     }
 
-    friend Fraction operator-(Fraction const &f1, Fraction const &f2)
+    Fraction operator-(Fraction const &f2)
     {
         Fraction f;
-        int temp_d = f1.denominator * f2.denominator;
-        int temp_n1 = f1.numerator * (temp_d / f1.denominator);
+        int temp_d = denominator * f2.denominator;
+        int temp_n1 = numerator * (temp_d / denominator);
         int temp_n2 = f2.numerator * (temp_d / f2.denominator);
 
         f.numerator = temp_n1 - temp_n2;
@@ -100,20 +100,11 @@ public:
         return temp_n1 == temp_n2;
     }
 
-    // overload cin
-    friend istream &operator>>(istream &cin, Fraction &f)
-    {
-        char slash;
-        cin >> f.numerator >> slash >> f.denominator;
-        return cin;
-    }
+    // overload cin, implement outside the class
+    friend istream &operator>>(istream &cin, Fraction &f);
 
     // overload cout
-    friend ostream &operator<<(ostream &os, Fraction &f)
-    {
-        os << f.numerator << "/" << f.denominator;
-        return os;
-    }
+    friend ostream &operator<<(ostream &output, Fraction &f);
 
 private:
     int numerator;
@@ -132,6 +123,21 @@ private:
         denominator /= temp_gcd;
     }
 };
+
+// overload cin
+istream &operator>>(istream &cin, Fraction &f)
+{
+    char slash;
+    cin >> f.numerator >> slash >> f.denominator;
+    return cin;
+}
+
+// overload cout
+ostream &operator<<(ostream &output, Fraction &f)
+{
+    output << f.numerator << "/" << f.denominator;
+    return output;
+}
 
 int main()
 {

@@ -1,0 +1,4 @@
+type, name, age, avg_speed, is_active
+A,Big Thing,25,56.54,true
+B, Medium Thing,36,45.15,false
+C, Small Thing,78,45.54,true
